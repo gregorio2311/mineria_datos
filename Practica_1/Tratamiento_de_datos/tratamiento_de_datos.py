@@ -4,19 +4,20 @@ import csv
 import pandas as pd
 
 data = []
-archivos_json = ['Spotify Extended Streaming History copy/Streaming_History_Audio_2014-2016_0.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2016-2017_1.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2017-2018_2.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2018-2019_3.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2019_4.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2019_5.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2019-2020_6.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2020_7.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2020-2021_8.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2021-2022_9.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2022-2023_10.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2023-2024_11.json',
-                 'Spotify Extended Streaming History copy/Streaming_History_Audio_2024_12.json']
+archivos_json = ['Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2014-2016_0.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2016-2017_1.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2017-2018_2.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2018-2019_3.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2019_4.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2019_5.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2019-2020_6.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2020_7.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2020-2021_8.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2021-2022_9.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2022-2023_10.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2023-2024_11.json',
+                 'Datos/Spotify Extended Streaming History copy/Streaming_History_Audio_2024_12.json']
+
 
 for archivo in archivos_json:
     if os.path.exists(archivo):
@@ -37,7 +38,7 @@ print_n(data)
 campos_x = [
     'username', 'platform', 'conn_country', 'ip_addr_decrypted',
     'user_agent_decrypted', 'episode_name', 'episode_show_name',
-    'spotify_episode_uri', 'reason_start', 'reason_end', 'shuffle',
+    'spotify_episode_uri', 'shuffle',
     'offline', 'offline_timestamp', 'incognito_mode'
 ]
 
