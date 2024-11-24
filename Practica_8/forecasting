@@ -1,0 +1,81 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+import matplotlib.pyplot as plt
+
+# Load the data
+data = pd.read_csv('/Users/gregorio/Documents/Mineria_Datos/Datos/Streaming_History_Audio.csv')
+# Ensure the necessary columns are present
+required_columns = ['ts', 'ms_played']
+if not all(column in data.columns for column in required_columns):
+    raise ValueError(f"Missing one of the required columns: {required_columns}")
+
+# Preprocess the data
+data['ts'] = pd.to_datetime(data['ts'])  # Ensure timestamp is in datetime format
+
+# Create daily averages of milliseconds played
+daily_average = data.resample('D', on='ts')['ms_played'].mean().reset_index()
+
+# Add a 'month' column to group by month
+daily_average['month'] = daily_average['ts'].dt.to_period('M')
+
+# Group by month to calculate the monthly average of daily ms_played
+monthly_avg = daily_average.groupby('month')['ms_played'].mean().reset_index()
+
+# Convert 'month' back to datetime and convert ms_played to minutes
+monthly_avg['month'] = monthly_avg['month'].dt.to_timestamp()
+monthly_avg['minutes_played'] = monthly_avg['ms_played'] / 60000
+
+# Filter data from 2016 onward
+filtered_data = monthly_avg[monthly_avg['month'] >= '2016-01-01']
+
+# Prepare data for regression
+X_filtered = np.array((filtered_data['month'] - filtered_data['month'].min()).dt.days).reshape(-1, 1)
+y_filtered = filtered_data['minutes_played']
+
+# Initialize plot
+plt.figure(figsize=(12, 6))
+plt.scatter(filtered_data['month'], filtered_data['minutes_played'], color='blue', label='Data')
+
+# Fit and plot polynomial regressions of degree 1, 3, 4, and 6
+r2_scores = {}
+for degree in [1, 3, 6]:
+    poly = PolynomialFeatures(degree)
+    X_poly_filtered = poly.fit_transform(X_filtered)
+    
+    model = LinearRegression()
+    model.fit(X_poly_filtered, y_filtered)
+    
+    y_pred_filtered = model.predict(X_poly_filtered)
+    plt.plot(filtered_data['month'], y_pred_filtered, label=f'Degree {degree}')
+    
+    # Calculate and store R² score
+    r2_scores[degree] = model.score(X_poly_filtered, y_filtered)
+    
+    # Predict future data
+    future_dates = pd.date_range(start=filtered_data['month'].max(), periods=24, freq='M')
+    X_future = np.array((future_dates - filtered_data['month'].min()).days).reshape(-1, 1)
+    X_poly_future = poly.fit_transform(X_future)
+    y_pred_future = model.predict(X_poly_future)
+    
+    # Plot future predictions
+    plt.plot(future_dates, y_pred_future, linestyle='--', label=f'Future Degree {degree}')
+
+
+# Plot settings
+plt.title('Polynomial Regression (2016 Onward): Daily Minutes Played')
+plt.xlabel('Date')
+plt.ylabel('Average Daily Minutes Played')
+plt.legend(loc='upper left')
+plt.grid(True)
+plt.show()
+
+# Print the filtered data and R² scores for reference
+print("R² scores for each polynomial degree:")
+for degree, score in r2_scores.items():
+    print(f"Degree {degree}: {score:.4f}")
+print(f"KNN: {knn.score(X_filtered, y_filtered):.4f}")
+
+
